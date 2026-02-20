@@ -196,12 +196,12 @@ jobject NativeDecoder::getBitmap()
         if (inDirectoryNumber < 0) inDirectoryNumber = 0;
 
         //Open tiff file
-        LOGIS("nativeTiffOpen", strPath);
         const char *strPath = NULL;
         if (decodingMode == DECODE_MODE_FILE_DESCRIPTOR) {
             image = TIFFFdOpen(jFd, "", "r");
         } else if (decodingMode == DECODE_MODE_FILE_PATH) {
             strPath = env->GetStringUTFChars(jPath, 0);
+            LOGIS("nativeTiffOpen", strPath);
             image = TIFFOpen(strPath, "r");
         }
 
@@ -243,7 +243,7 @@ jobject NativeDecoder::getBitmap()
             boundHeight = env->GetIntField(decodeArea, heightFieldID);
             if (boundX >= origwidth-1) {
                 const char *message = "X of left top corner of decode area should be less than image width";
-                LOGE(*message);
+                LOGE(message);
                 if (throwException) {
                     throwDecodeFileException(message);
                 }
@@ -252,7 +252,7 @@ jobject NativeDecoder::getBitmap()
             }
             if (boundY >= origheight-1) {
                 const char *message = "Y of left top corner of decode area should be less than image height";
-                LOGE(*message);
+                LOGE(message);
                 if (throwException) {
                     throwDecodeFileException(message);
                 }
@@ -267,7 +267,7 @@ jobject NativeDecoder::getBitmap()
 
             if (boundWidth < 1) {
                 const char *message = "Width of decode area can\'t be less than 1";
-                LOGE(*message);
+                LOGE(message);
                 if (throwException) {
                     throwDecodeFileException(message);
                 }
@@ -276,7 +276,7 @@ jobject NativeDecoder::getBitmap()
             }
             if (boundHeight < 1) {
                 const char *message = "Height of decode area can\'t be less than 1";
-                LOGE(*message);
+                LOGE(message);
                 if (throwException) {
                     throwDecodeFileException(message);
                 }
@@ -2636,7 +2636,7 @@ jint * NativeDecoder::getSampledRasterFromImage(int inSampleSize, int *bitmapwid
         TIFFReadRGBAImageOriented(image, origwidth, origheight, origBuffer, ORIENTATION_TOPLEFT, 0)) {
 	    free(origBuffer);
 	    const char *message = "Error reading image";
-        LOGE(*message);
+        LOGE(message);
         if (throwException) {
             throwDecodeFileException(message);
         }
@@ -2882,7 +2882,7 @@ jint * NativeDecoder::getSampledRasterFromImageWithBounds(int inSampleSize, int 
         TIFFReadRGBAImageOriented(image, origwidth, origheight, origBuffer, ORIENTATION_TOPLEFT, 0)) {
 	    free(origBuffer);
 	    const char *message = "Error reading image";
-        LOGE(*message);
+        LOGE(message);
         if (throwException) {
             throwDecodeFileException(message);
         }
@@ -3882,6 +3882,7 @@ void NativeDecoder::throwCantOpenFileException() {
         throw_cant_open_file_exception_fd(env, jFd);
     }
 }
+
 
 
 

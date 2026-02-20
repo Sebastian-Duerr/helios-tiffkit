@@ -1,4 +1,5 @@
 LOCAL_PATH := $(call my-dir)
+PAGE_SIZE_16K_LDFLAGS := -Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384
 
 include $(CLEAR_VARS)
 
@@ -57,8 +58,8 @@ LOCAL_CFLAGS += -DAVOID_TABLES
 LOCAL_CFLAGS += -O3 -fstrict-aliasing -fprefetch-loop-arrays
 LOCAL_MODULE:= libtiff
 LOCAL_LDLIBS := -lz
-
-LOCAL_LDLIBS += $(LOCAL_PATH)/libs/$(TARGET_ARCH_ABI)/libjpeg.a
+LOCAL_LDFLAGS += $(PAGE_SIZE_16K_LDFLAGS)
+LOCAL_STATIC_LIBRARIES += jpeg
 
 include $(BUILD_SHARED_LIBRARY)
 ###############################################################
@@ -81,6 +82,7 @@ LOCAL_SRC_FILES := \
 	NativeDecoder.cpp
 LOCAL_LDLIBS := -ldl -llog -ljnigraphics
 LOCAL_LDFLAGS +=-ljnigraphics
+LOCAL_LDFLAGS += $(PAGE_SIZE_16K_LDFLAGS)
 LOCAL_SHARED_LIBRARIES := tiff
 include $(BUILD_SHARED_LIBRARY)
 
@@ -93,6 +95,7 @@ LOCAL_SRC_FILES := \
 	NativeTiffSaver.cpp
 LOCAL_LDLIBS := -ldl -llog -ljnigraphics
 LOCAL_LDFLAGS +=-ljnigraphics
+LOCAL_LDFLAGS += $(PAGE_SIZE_16K_LDFLAGS)
 LOCAL_SHARED_LIBRARIES := tiff
 include $(BUILD_SHARED_LIBRARY)
 
@@ -119,6 +122,7 @@ LOCAL_C_INCLUDES := \
 
 LOCAL_LDLIBS := -lz -ldl -llog -ljnigraphics
 LOCAL_LDFLAGS +=-ljnigraphics
+LOCAL_LDFLAGS += $(PAGE_SIZE_16K_LDFLAGS)
 LOCAL_STATIC_LIBRARIES := png
 LOCAL_STATIC_LIBRARIES += jpeg
 LOCAL_SHARED_LIBRARIES := tiff

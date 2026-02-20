@@ -230,7 +230,7 @@ jboolean TiffToJpgConverter::convertFromImage() {
     origBuffer = (uint32 *) _TIFFmalloc(origBufferSize);
     if (origBuffer == NULL) {
         const char *message = "Can\'t allocate buffer";
-        LOGE(*message);
+        LOGE(message);
         if (throwException) {
             throw_not_enought_memory_exception(env, availableMemory, origBufferSize);
         }
@@ -613,3 +613,4 @@ int TiffToJpgConverter::getDecodeMethod() {
 	LOGII("Decode method", method);
 	return method;*/
 }
+

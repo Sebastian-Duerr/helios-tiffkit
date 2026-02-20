@@ -181,7 +181,7 @@ char BaseTiffConverter::normalizeDecodeArea() {
     if (hasBounds) {
         if (boundX >= width-1) {
                 const char *message = "X of left top corner of decode area should be less than image width";
-                LOGE(*message);
+                LOGE(message);
                 if (throwException) {
                     jstring adinf = env->NewStringUTF(message);
                     if (inPath) {
@@ -195,7 +195,7 @@ char BaseTiffConverter::normalizeDecodeArea() {
             }
             if (boundY >= height-1) {
                 const char *message = "Y of left top corner of decode area should be less than image height";
-                LOGE(*message);
+                LOGE(message);
                 if (throwException) {
                     jstring adinf = env->NewStringUTF(message);
                     if (inPath) {
@@ -215,7 +215,7 @@ char BaseTiffConverter::normalizeDecodeArea() {
 
             if (boundWidth < 1) {
                 const char *message = "Width of decode area can\'t be less than 1";
-                LOGE(*message);
+                LOGE(message);
                 if (throwException) {
                     jstring adinf = env->NewStringUTF(message);
                     if (inPath) {
@@ -229,7 +229,7 @@ char BaseTiffConverter::normalizeDecodeArea() {
             }
             if (boundHeight < 1) {
                 const char *message = "Height of decode area can\'t be less than 1";
-                LOGE(*message);
+                LOGE(message);
                 if (throwException) {
                     jstring adinf = env->NewStringUTF(message);
                     if (inPath) {
@@ -354,3 +354,4 @@ void BaseTiffConverter::normalizeTile(uint32 tileHeight, uint32 tileWidth, uint3
         }
     }
 }
+
