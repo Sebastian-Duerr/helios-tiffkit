@@ -155,7 +155,7 @@ public class TiffBitmapFactory {
      * @throws org.beyka.tiffbitmapfactory.exceptions.NotEnoughtMemoryException when for decoding of image system need more memory than {@link Options#inAvailableMemory} or default value
      */
     public static Bitmap decodePath(String path, Options options) throws CantOpenFileException, DecodeTiffException, NotEnoughtMemoryException {
-        return decodePath(path, options);
+        return decodePath(path, options, null);
     }
 
     /**
@@ -181,6 +181,70 @@ public class TiffBitmapFactory {
         Bitmap mbp = nativeDecodePath(path, options, listener);
         Log.w("THREAD", "elapsed ms: " + (System.currentTimeMillis() - time) + " for " + path);
         return mbp;
+    }
+
+    /**
+     * Decode TIFF preview for UI thumbnails.
+     * Performs bounds decode first, then decodes with calculated sample size.
+     */
+    public static Bitmap decodeThumbnail(String path, int reqWidth, int reqHeight) throws CantOpenFileException, DecodeTiffException, NotEnoughtMemoryException {
+        return decodeThumbnail(path, reqWidth, reqHeight, true);
+    }
+
+    /**
+     * Decode TIFF preview for UI thumbnails from File.
+     */
+    public static Bitmap decodeThumbnail(File file, int reqWidth, int reqHeight) throws CantOpenFileException, DecodeTiffException, NotEnoughtMemoryException {
+        return decodeThumbnail(file, reqWidth, reqHeight, true);
+    }
+
+    /**
+     * Decode TIFF preview for UI thumbnails from File with optional orientation handling.
+     */
+    public static Bitmap decodeThumbnail(File file, int reqWidth, int reqHeight, boolean useOrientationTag) throws CantOpenFileException, DecodeTiffException, NotEnoughtMemoryException {
+        if (file == null) {
+            throw new IllegalArgumentException("file must not be null");
+        }
+        return decodeThumbnail(file.getAbsolutePath(), reqWidth, reqHeight, useOrientationTag);
+    }
+
+    /**
+     * Decode TIFF preview for UI thumbnails with optional orientation handling.
+     */
+    public static Bitmap decodeThumbnail(String path, int reqWidth, int reqHeight, boolean useOrientationTag) throws CantOpenFileException, DecodeTiffException, NotEnoughtMemoryException {
+        if (path == null) {
+            throw new IllegalArgumentException("path must not be null");
+        }
+        if (reqWidth <= 0 || reqHeight <= 0) {
+            throw new IllegalArgumentException("reqWidth and reqHeight must be > 0");
+        }
+
+        Options boundsOptions = new Options();
+        boundsOptions.inJustDecodeBounds = true;
+        boundsOptions.inUseOrientationTag = useOrientationTag;
+        decodePath(path, boundsOptions, null);
+
+        Options decodeOptions = new Options();
+        decodeOptions.inUseOrientationTag = useOrientationTag;
+        decodeOptions.inSampleSize = calculateInSampleSize(
+                boundsOptions.outWidth,
+                boundsOptions.outHeight,
+                reqWidth,
+                reqHeight
+        );
+        return decodePath(path, decodeOptions, null);
+    }
+
+    private static int calculateInSampleSize(int width, int height, int reqWidth, int reqHeight) {
+        if (width <= 0 || height <= 0) {
+            return 1;
+        }
+
+        int sampleSize = 1;
+        while ((width / (sampleSize * 2)) >= reqWidth && (height / (sampleSize * 2)) >= reqHeight) {
+            sampleSize *= 2;
+        }
+        return sampleSize;
     }
 
     /**
