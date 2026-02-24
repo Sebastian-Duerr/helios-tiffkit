@@ -9,6 +9,7 @@ android {
     defaultConfig {
         minSdk 21
         targetSdk 34
+        buildConfigField "String", "softwarename", "\"helios-tiffkit\""
 
         // Keep ABI coverage close to the original published artifact.
         ndk {
@@ -20,6 +21,10 @@ android {
                 arguments "NDK_APPLICATION_MK=src/main/jni/Application.mk"
             }
         }
+    }
+
+    buildFeatures {
+        buildConfig true
     }
 
     buildTypes {
